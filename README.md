@@ -97,3 +97,8 @@ go to ProjectName (level 2) and run this command -
         python3 manage.py runserver
 
 You can see your server running on http://127.0.0.1:8000.
+By default, the runserver command starts the development server on the internal IP at port 8000.
+
+If you want to change the server’s port, pass it as a command-line argument. For instance, this command starts the server on port 8080:
+
+        python3 manage.py runserver 8080
