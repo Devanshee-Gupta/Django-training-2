@@ -20,34 +20,37 @@ def getAllRecords(request):
             choicesSerializer=ChoiceSerializer(choices,many=True)
             i['choices']=choicesSerializer.data
             list_of_questions.append(i)
-    print(list_of_questions)
     return render(request,"home.html",{'list_of_questions':list_of_questions,'votes':29})
 
 def vote(request,questionId,choiceId):
-        
+    showCorrect=""
     question = Question.objects.filter(id=questionId)
     if(question):
             choice = Choice.objects.filter(id=choiceId)
 
             if(choice):
                 if(question[0].id != choice[0].question.id):
-                    return redirect("/")  
+                    return redirect("/#H{}".format(questionId))  
                 
                 else:    
+                    if(choice[0].is_correct):
+                        showCorrect=True
+                    else:
+                        showCorrect=False
+
                     choice[0].votes+=1
                     question[0].total_votes+=1
                     question[0].save()
                     choice[0].save()
                     messages.success(request,"Voted Successfully");
-                    return redirect("/")  
+                    return redirect("/#H{0}".format(questionId))  
             else:
-                return redirect("/")  
+                return redirect("/#H{}".format(questionId))  
     else:  
-        return redirect("/")  
+        return redirect("/#H{}".format(questionId))  
 
 @csrf_exempt
 def addNewQuestion(request):
-    
     data = request.POST
     question_text = data['question_text']
     choice_text_1 = data['choice_text_1']
@@ -81,4 +84,40 @@ def addNewQuestion(request):
     return redirect("/")
 
 
-    
+def ShowCorrectAns(request,questionId):
+    question = Question.objects.filter(id=questionId)
+    if(question):
+            choice = Choice.objects.filter(question=question[0])
+            for i in choice:
+                if(i.is_correct):
+                    return {
+                        "ShowCorrectAns" : i
+                    }
+    else: 
+        return redirect("/#H{}".format(questionId))  
+
+
+def delete(request,questionId):
+    question = Question.objects.filter(id=questionId)
+    if(question):
+            messages.success(request,"Deleted Successfully !")
+            Choice.objects.filter(question=question[0]).delete()
+            question.delete()
+            return redirect('/')
+    else: 
+        return redirect('/')
+
+# views.py
+
+def getDataForEditQuestion(request, question_id):
+    question = Question.objects.get(pk=question_id)
+    choices = Choice.objects.filter(question=question)
+    context = {
+        'question': question,
+        'choices': choices,
+    }
+    return render(request, 'edit_question_modal.html', context)
+
+def updateQuestion(request):
+     
+        return redirect('/')
