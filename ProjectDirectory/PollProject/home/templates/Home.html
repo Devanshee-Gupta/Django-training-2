@@ -4,11 +4,12 @@
   <div class="container-fluid">
     <a
       class="navbar-brand fs-4"
-      href="#"
+      href="/"
       style="
         font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
       "
     >
+      <!-- PollingArea logo  -->
       <img
         src="https://uxwing.com/wp-content/themes/uxwing/download/education-school/poll-icon.png"
         alt=""
@@ -18,7 +19,151 @@
       />
       PollingArea
     </a>
+    <div>
+      <!-- Modal opening button  -->
+      <button
+        class="btn p-0 ms-3 px-1 pb-1 outline-none shadow-none mt-2"
+        type="button"
+        style="width: 34px; border-radius: 50%; border: 3px solid black"
+        data-bs-toggle="modal"
+        data-bs-target="#exampleModal"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+          <path
+            d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"
+          />
+        </svg>
+      </button>
 
+      <!-- Modal  -->
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <!-- Modal header  -->
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Add New Question
+              </h5>
+
+              <!-- Modal close button  -->
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+
+            <!-- Modal form  -->
+            <form method="post" action="{% url 'addNewQuestion' %}">
+              {% csrf_token %}
+              <!-- Modal body  -->
+              <div class="modal-body">
+                <!-- Question input  -->
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="question_text"
+                    >Question</span
+                  >
+                  <input
+                    type="text"
+                    class="form-control shadow-none outline-none"
+                    placeholder="Enter Question"
+                    aria-label="question_text"
+                    name="question_text"
+                    aria-describedby="question_text"
+                  />
+                </div>
+
+                <!-- Choices Body  -->
+                <div id="choices_body">
+                  <!-- Choice 1 input -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="choice_text_1">
+                      Choice 1</span
+                    >
+                    <input
+                      type="text"
+                      class="form-control shadow-none outline-none"
+                      placeholder="Enter Choice"
+                      aria-label="choice_text_1"
+                      aria-describedby="choice_text_1"
+                      name="choice_text_1"
+                    />
+                  </div>
+
+                  <!-- Choice 2 input -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="choice_text_2">
+                      Choice 2</span
+                    >
+                    <input
+                      type="text"
+                      class="form-control shadow-none outline-none"
+                      placeholder="Enter Choice"
+                      aria-label="choice_text_2"
+                      aria-describedby="choice_text_2"
+                      name="choice_text_2"
+                    />
+                  </div>
+
+                  <!-- Choice 3 input -->
+                  <div class="input-group mb-3">
+                    <span class="input-group-text" id="choice_text_3">
+                      Choice 3</span
+                    >
+                    <input
+                      type="text"
+                      class="form-control shadow-none outline-none"
+                      placeholder="Enter Choice"
+                      aria-label="choice_text_3"
+                      name="choice_text_3"
+                      aria-describedby="choice_text_3"
+                    />
+                  </div>
+
+                  <div class="input-group mb-3">
+                    <span class="input-group-text bg-success text-light" id="correct_ans">
+                      Correct Answer</span
+                    >
+                    <input
+                      type="number"
+                      class="form-control shadow-none outline-none"
+                      placeholder="1/2/3"
+                      aria-label="correct_ans"
+                      name="correct_ans"
+                      aria-describedby="correct_ans"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Modal footer  -->
+              <div class="modal-footer">
+                <!-- Cancel button  -->
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel
+                </button>
+
+                <!-- Add button  -->
+                <button type="submit" class="btn btn-dark">Add</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Search box in Navbar -->
     <form class="d-flex">
       <input
         class="form-control me-2"
@@ -32,24 +177,25 @@
     </form>
   </div>
 </nav>
+
 <div class="accordion accordion-flush mt-5 border-2" id="accordionFlushExample">
-  {% for i in list_of_questions %}
+  {% load static %} {% for i in list_of_questions %}
   <div class="accordion-item">
     <h2 class="accordion-header" id="flush-headingOne">
       <button
         class="accordion-button collapsed"
         type="button"
         data-bs-toggle="collapse"
-        data-bs-target="#flush-collapseOne"
+        data-bs-target="#Q{{i.id}}"
         aria-expanded="false"
-        aria-controls="flush-collapseOne"
+        aria-controls="Q{{i.id}}"
       >
         {{i.id}}. {{i.question_text}}
       </button>
     </h2>
     <div
-      id="flush-collapseOne"
-      class="accordion-collapse collapse"
+      id="Q{{i.id}}"
+      class="accordion-collapse show"
       aria-labelledby="flush-headingOne"
       data-bs-parent="#accordionFlushExample"
     >
@@ -59,40 +205,42 @@
           <div class="col-4">Total Votes</div>
           <div class="col-2">Vote</div>
         </div>
-        {% for j in i.choices %}
-        <div class="row d-flex align-items-center">
-          <div class="col-6">
-            {{j.id}}. <span class="ms-3"> {{j.choice_text}} </span>
-          </div>
-          <div class="col-4">
-            <div class="progress">
-              <div
-                class="progress-bar"
-                role="progressbar"
-                style="width: {{j.votes}}% "
-                aria-valuenow="{{j.votes}}"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                {{j.votes}}%
+        <ol start="1">
+          {% for j in i.choices %}
+          <div class="row d-flex align-items-center">
+            <div class="col-6">
+              <li class="ms-3">{{j.choice_text}}</li>
+            </div>
+            <div class="col-4">
+              <div class="progress">
+                <div
+                  class="progress-bar bg-dark"
+                  role="progressbar"
+                  style="width: {{j.votes}}%"
+                  aria-valuenow="{{j.votes}}"
+                  aria-valuemin="0"
+                  aria-valuemax="100"
+                >
+                  {{j.votes}}%
+                </div>
               </div>
             </div>
+            <div class="col-2">
+              <a href="/vote/{{i.id}}/{{j.id}}" class="btn w-25">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                  <path
+                    d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
+                  />
+                </svg>
+              </a>
+            </div>
           </div>
-          <div class="col-2">
-            <button class="btn w-25">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path
-                  d="M313.4 32.9c26 5.2 42.9 30.5 37.7 56.5l-2.3 11.4c-5.3 26.7-15.1 52.1-28.8 75.2H464c26.5 0 48 21.5 48 48c0 18.5-10.5 34.6-25.9 42.6C497 275.4 504 288.9 504 304c0 23.4-16.8 42.9-38.9 47.1c4.4 7.3 6.9 15.8 6.9 24.9c0 21.3-13.9 39.4-33.1 45.6c.7 3.3 1.1 6.8 1.1 10.4c0 26.5-21.5 48-48 48H294.5c-19 0-37.5-5.6-53.3-16.1l-38.5-25.7C176 420.4 160 390.4 160 358.3V320 272 247.1c0-29.2 13.3-56.7 36-75l7.4-5.9c26.5-21.2 44.6-51 51.2-84.2l2.3-11.4c5.2-26 30.5-42.9 56.5-37.7zM32 192H96c17.7 0 32 14.3 32 32V448c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32V224c0-17.7 14.3-32 32-32z"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
-        {% endfor %}
+          {% endfor %}
+        </ol>
       </div>
+      <p class="text-end me-5">Total votes casted : {{i.total_votes}}</p>
     </div>
   </div>
-
   {% endfor %}
 </div>
 {% endblock %}
