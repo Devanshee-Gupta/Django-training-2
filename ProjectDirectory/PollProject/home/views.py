@@ -1,8 +1,6 @@
-
-from urllib import request
+from email import message
 from django.contrib import messages
-from django.http import HttpResponse
-from rest_framework.response import Response
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from home.serializers import ChoiceSerializer, QuestionSerializer
 from django.views.decorators.csrf import csrf_exempt
@@ -13,14 +11,15 @@ from home.models import Choice, Question
 
 def getAllRecords(request):
     list_of_questions=[]
-    questionSerializer = QuestionSerializer(Question.objects.all(),many=True)
+    questions = Question.objects.all().order_by('id')
+    questionSerializer = QuestionSerializer(questions,many=True)
 
     for i in questionSerializer.data:
             choices = Choice.objects.filter(question__id=i['id'])
             choicesSerializer=ChoiceSerializer(choices,many=True)
             i['choices']=choicesSerializer.data
             list_of_questions.append(i)
-    return render(request,"home.html",{'list_of_questions':list_of_questions,'votes':29})
+    return render(request,"home.html",{'list_of_questions':list_of_questions})
 
 def vote(request,questionId,choiceId):
     showCorrect=""
@@ -84,19 +83,6 @@ def addNewQuestion(request):
     return redirect("/")
 
 
-def ShowCorrectAns(request,questionId):
-    question = Question.objects.filter(id=questionId)
-    if(question):
-            choice = Choice.objects.filter(question=question[0])
-            for i in choice:
-                if(i.is_correct):
-                    return {
-                        "ShowCorrectAns" : i
-                    }
-    else: 
-        return redirect("/#H{}".format(questionId))  
-
-
 def delete(request,questionId):
     question = Question.objects.filter(id=questionId)
     if(question):
@@ -107,17 +93,49 @@ def delete(request,questionId):
     else: 
         return redirect('/')
 
-# views.py
 
-def getDataForEditQuestion(request, question_id):
-    question = Question.objects.get(pk=question_id)
+def getDataForEditQuestion(request, questionId):
+    question = Question.objects.filter(id=questionId).first()
     choices = Choice.objects.filter(question=question)
-    context = {
-        'question': question,
-        'choices': choices,
-    }
-    return render(request, 'edit_question_modal.html', context)
+    choiceSerializer = ChoiceSerializer(choices,many=True)
+    questionSerializer = QuestionSerializer(question)
 
-def updateQuestion(request):
-     
-        return redirect('/')
+    return JsonResponse({
+        "question": questionSerializer.data,
+        "choices": choiceSerializer.data,
+    }, status=200)
+
+@csrf_exempt
+def updateQuestion(request,questionId):
+    
+    if request.method=='POST':
+        data = request.POST
+        question_text = data['edit_question_text']
+        choice_texts = [data.get(f'edit_choice_text_{i}') for i in range(1, 4)]
+        correct_ans = data.get('edit_correct_ans')
+
+        # Validate correct answer
+        if correct_ans not in ['1', '2', '3']:
+            messages.error(request, "Please select a valid correct answer.")
+            return redirect("/")
+
+        q = Question.objects.filter(id=questionId).first()
+
+        # Update question text
+        q.question_text = question_text
+        q.save()
+        print(type(q))
+        choices = Choice.objects.filter(question=q)
+        # Update choices
+        
+        for i, choice_text in enumerate(choice_texts):
+            choice = choices[i]
+            choice.choice_text = choice_text
+            choice.is_correct = (correct_ans == str(i + 1))
+            choice.save()
+
+        messages.success(request, "Question updated successfully.")
+        return redirect("/")
+    else:
+        # If the request method is not POST, return a bad request response
+        return HttpResponseBadRequest("Invalid request method")
