@@ -102,3 +102,28 @@ By default, the runserver command starts the development server on the internal 
 If you want to change the server’s port, pass it as a command-line argument. For instance, this command starts the server on port 8080:
 
         python3 manage.py runserver 8080
+
+## Snippets for CRUD in PollingArea Project  -
+
+### Read operation -
+
+<img width="1440" alt="Screenshot 2024-04-17 at 2 01 46 PM" src="https://github.com/Devanshee-Gupta/Django-training-2/assets/154060860/5470e806-4084-4c90-a308-b0e0922c803a">
+
+### Create operation -
+
+<img width="1440" alt="Screenshot 2024-04-17 at 2 01 54 PM" src="https://github.com/Devanshee-Gupta/Django-training-2/assets/154060860/778ed8f8-d038-44c6-8d71-3eb9557c89ad">
+
+### Update operation -
+
+<img width="1440" alt="Screenshot 2024-04-17 at 2 02 04 PM" src="https://github.com/Devanshee-Gupta/Django-training-2/assets/154060860/c31c229d-b0fa-4643-86f6-5b36eecd8902">
+
+### Delete operation -
+
+  #### Before Deletion : 
+  
+<img width="1440" alt="Screenshot 2024-04-17 at 2 02 44 PM" src="https://github.com/Devanshee-Gupta/Django-training-2/assets/154060860/f23f3f97-067a-426a-9e53-140cb38fd511">
+  
+  #### After Deletion :
+  
+<img width="1440" alt="Screenshot 2024-04-17 at 2 02 58 PM" src="https://github.com/Devanshee-Gupta/Django-training-2/assets/154060860/dc8c8c9d-a7ee-4db2-85c6-538ec3b80fab">
+
