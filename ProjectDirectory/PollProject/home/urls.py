@@ -8,5 +8,6 @@ urlpatterns = [
     path("vote/<int:questionId>/<int:choiceId>",views.vote, name="vote"),
     path("delete/<int:questionId>",views.delete, name="delete"),
     path("getDataForEditQuestion/<int:questionId>",views.getDataForEditQuestion, name="getDataForEditQuestion"),
-    path("updateQuestion/<int:questionId>",views.updateQuestion, name="updateQuestion")
+    path("updateQuestion/<int:questionId>",views.updateQuestion, name="updateQuestion"),
+    path("test/",views.test, name="test")
 ]

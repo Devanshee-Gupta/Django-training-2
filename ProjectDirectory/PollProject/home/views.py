@@ -4,7 +4,8 @@ from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.shortcuts import redirect, render
 from home.serializers import ChoiceSerializer, QuestionSerializer
 from django.views.decorators.csrf import csrf_exempt
-# from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 from home.models import Choice, Question
 
 # Create your views here.
@@ -19,7 +20,7 @@ def getAllRecords(request):
             choicesSerializer=ChoiceSerializer(choices,many=True)
             i['choices']=choicesSerializer.data
             list_of_questions.append(i)
-    return render(request,"home.html",{'list_of_questions':list_of_questions})
+    return render(request,"Home.html",{'list_of_questions':list_of_questions})
 
 def vote(request,questionId,choiceId):
     showCorrect=""
@@ -139,3 +140,7 @@ def updateQuestion(request,questionId):
     else:
         # If the request method is not POST, return a bad request response
         return HttpResponseBadRequest("Invalid request method")
+
+@api_view(['GET']) 
+def test(request):
+    return Response({"status" : 200})
