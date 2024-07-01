@@ -27,4 +27,5 @@ jobs:
         pip install -r ProjectDirectory/requirements.txt
     - name: Run Tests
       run: |
+        cd ProjectDirectory/PollProject
         python manage.py test
